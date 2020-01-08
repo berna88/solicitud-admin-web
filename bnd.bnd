@@ -1,0 +1,4 @@
+Bundle-Name: solicitud-admin-web
+Bundle-SymbolicName: mx.com.cuervo.solicitud.admin
+Bundle-Version: 1.0.0
+Export-Package: mx.com.cuervo.solicitud.admin.constants
