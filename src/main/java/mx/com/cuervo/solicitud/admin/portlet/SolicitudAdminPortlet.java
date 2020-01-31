@@ -49,7 +49,7 @@ import mx.com.cuervo.solicitud.admin.constants.SolicitudAdminPortletKeys;
 	    service = Portlet.class
 	)
 public class SolicitudAdminPortlet extends MVCPortlet {
-	
+	 
 	public void aprobarSolicitud(ActionRequest request, ActionResponse response)
 		    throws PortalException {
 		  ServiceContext serviceContext = ServiceContextFactory.getInstance(
