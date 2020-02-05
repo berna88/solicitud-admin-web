@@ -4,6 +4,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 
 import java.io.IOException;
@@ -26,7 +27,8 @@ import mx.com.cuervo.rutas.transporte.model.Solicitud;
 import mx.com.cuervo.rutas.transporte.service.RutaLocalService;
 import mx.com.cuervo.rutas.transporte.service.SolicitudLocalService;
 import mx.com.cuervo.solicitud.admin.constants.SolicitudAdminPortletKeys;
-
+import mx.com.cuervo.solicitud.admin.notification.ImplementNotificacion;
+ 
 /**
  * @author Jonathan Cruz Sanchez
  */
@@ -56,17 +58,19 @@ public class SolicitudAdminPortlet extends MVCPortlet {
 			        Solicitud.class.getName(), request);
 
 			    long solicitudId = ParamUtil.getLong(request, "solicitudId");
-
+ 
 			    try {
+			    
 			       Solicitud solicitud = _solicitudLocalService.aprobarSolicitud(serviceContext.getUserId(), 
-			        		solicitudId, true, serviceContext);
-			       
-			      Ruta ruta = _rutaLocalService.fetchRuta(solicitud.getRutaId());
+			        		solicitudId, true, serviceContext); 
+			       ImplementNotificacion notificacion = new ImplementNotificacion(request, solicitud.getUserId(), "Transporte", "Tu solicitud ha sido aprobada, si tienes duda contacta al área de servicios generales", SolicitudAdminPortletKeys.SOLICITUDADMIN);
+			      System.out.println(solicitud.getEmail()+UserLocalServiceUtil.getUserByEmailAddress(20101, solicitud.getEmail()));
+			       Ruta ruta = _rutaLocalService.fetchRuta(solicitud.getRutaId());
 			      _rutaLocalService.updateRuta(serviceContext.getUserId(), 
 			    		  ruta.getRutaId(), ruta.getNombreRuta(), 
 			    		  ruta.getCapacidad(), 
 			    		  ruta.getDisponibilidad() - 1, serviceContext);
-			      
+			      notificacion.sendNotification(); 
 			    }
 			    catch (PortalException pe) {
 
@@ -85,12 +89,14 @@ public class SolicitudAdminPortlet extends MVCPortlet {
 			    try {
 			    	Solicitud solicitud = _solicitudLocalService.aprobarSolicitud(serviceContext.getUserId(), 
 			        		solicitudId, false, serviceContext);
+			    	ImplementNotificacion notificacion = new ImplementNotificacion(request, solicitud.getUserId(), "Transporte", "Tu solicitud ha sido rechazada, si tienes duda contacta al área de servicios generales", SolicitudAdminPortletKeys.SOLICITUDADMIN);
+			    	
 			        Ruta ruta = _rutaLocalService.fetchRuta(solicitud.getRutaId());
 				      _rutaLocalService.updateRuta(serviceContext.getUserId(), 
 				    		  ruta.getRutaId(), ruta.getNombreRuta(), 
 				    		  ruta.getCapacidad(), 
 				    		  ruta.getDisponibilidad() + 1, serviceContext);
-				  
+				      notificacion.sendNotification(); 
 			    }
 			    catch (PortalException pe) {
 
