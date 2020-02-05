@@ -63,13 +63,13 @@ public class SolicitudAdminPortlet extends MVCPortlet {
 			    
 			       Solicitud solicitud = _solicitudLocalService.aprobarSolicitud(serviceContext.getUserId(), 
 			        		solicitudId, true, serviceContext); 
-			       ImplementNotificacion notificacion = new ImplementNotificacion(request, solicitud.getUserId(), "Transporte", "Tu solicitud ha sido aprobada, si tienes duda contacta al área de servicios generales", SolicitudAdminPortletKeys.SOLICITUDADMIN);
-			      System.out.println(solicitud.getEmail()+UserLocalServiceUtil.getUserByEmailAddress(20101, solicitud.getEmail()));
+			       
 			       Ruta ruta = _rutaLocalService.fetchRuta(solicitud.getRutaId());
 			      _rutaLocalService.updateRuta(serviceContext.getUserId(), 
 			    		  ruta.getRutaId(), ruta.getNombreRuta(), 
 			    		  ruta.getCapacidad(), 
 			    		  ruta.getDisponibilidad() - 1, serviceContext);
+			      ImplementNotificacion notificacion = new ImplementNotificacion(request, UserLocalServiceUtil.getUserByEmailAddress(serviceContext.getCompanyId(), solicitud.getEmail()).getUserId(), "Transporte", "Tu solicitud ha sido aprobada en la ruta "+ ruta.getNombreRuta() +", si tienes duda contacta al área de servicios generales", SolicitudAdminPortletKeys.SOLICITUDADMIN);
 			      notificacion.sendNotification(); 
 			    }
 			    catch (PortalException pe) {
@@ -87,15 +87,17 @@ public class SolicitudAdminPortlet extends MVCPortlet {
 			    long solicitudId = ParamUtil.getLong(request, "solicitudId");
 
 			    try {
+			    	
 			    	Solicitud solicitud = _solicitudLocalService.aprobarSolicitud(serviceContext.getUserId(), 
 			        		solicitudId, false, serviceContext);
-			    	ImplementNotificacion notificacion = new ImplementNotificacion(request, solicitud.getUserId(), "Transporte", "Tu solicitud ha sido rechazada, si tienes duda contacta al área de servicios generales", SolicitudAdminPortletKeys.SOLICITUDADMIN);
 			    	
 			        Ruta ruta = _rutaLocalService.fetchRuta(solicitud.getRutaId());
 				      _rutaLocalService.updateRuta(serviceContext.getUserId(), 
 				    		  ruta.getRutaId(), ruta.getNombreRuta(), 
 				    		  ruta.getCapacidad(), 
 				    		  ruta.getDisponibilidad() + 1, serviceContext);
+				      ImplementNotificacion notificacion = new ImplementNotificacion(request, UserLocalServiceUtil.getUserByEmailAddress(serviceContext.getCompanyId(), solicitud.getEmail()).getUserId(), "Transporte", "Tu solicitud ha sido rechazada en la ruta "+ruta.getNombreRuta() +", si tienes duda contacta al área de servicios generales", SolicitudAdminPortletKeys.SOLICITUDADMIN);
+				    	
 				      notificacion.sendNotification(); 
 			    }
 			    catch (PortalException pe) {
