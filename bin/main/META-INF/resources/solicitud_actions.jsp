@@ -28,18 +28,29 @@
     </portlet:actionURL>
     
 
-<% if(solicitud.getAprobado()){ %>
+<%if(solicitud.getAprobado() == true){ %>
 <liferay-ui:icon image="close" message="Rechazar"
             url="<%=rechazarURL.toString() %>" />
+<%} else{%>
+<liferay-ui:icon image="close" message="Rechazar" url="#"></liferay-ui:icon>
+<%} %>
 
-<% }else{ %>
 <liferay-ui:icon image="check" message="Aprobar"
             url="<%=aprobarURL.toString() %>" />
-
-<%} %>
-    <liferay-ui:icon-delete url="<%=deleteURL.toString() %>" />
+<% if(solicitud.getAprobado() == true) { %>
+<liferay-ui:icon-delete id="delete" url="#" />
+<% }else { %>
+<liferay-ui:icon-delete url="<%=deleteURL.toString() %>" />
+<% } %>
 
 
 
 
 </liferay-ui:icon-menu>
+<script>
+$('#_mx_com_cuervo_solicitud_admin_SolicitudPortlet_delete').click(function(){
+	  //do something
+	alert('Tienes que rechazar antes de eliminar');
+	});
+
+</script>
