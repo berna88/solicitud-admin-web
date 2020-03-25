@@ -42,7 +42,7 @@
 <% }else { %>
 <liferay-ui:icon-delete url="<%=deleteURL.toString() %>" />
 <% } %>
-
+ 
 
 
 
